@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var outputImage: File
     lateinit var myphoto:Bitmap
     lateinit var tflite:Interpreter
+    val ImageMean=0
     lateinit var tv_show: TextView
     private val labelProbArray =
         Array(1) { FloatArray(13) }
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                     val bitmap=BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
                     myphoto=bitmap
                     predict_image()
-                    imageView.setImageBitmap(rotateIfRequired(bitmap))
+                    imageView.setImageBitmap(rotateIfRequired(scaleBitmap(bitmap)))
                 }
             }
             fromAlbum->{
@@ -84,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                             myphoto=bitmap
                         }
                         predict_image()
-                        imageView.setImageBitmap(bitmap)
+                        imageView.setImageBitmap(bitmap?.let { scaleBitmap(it) })
                     }
                 }
             }
@@ -112,16 +113,16 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun scaleBitmap(bitmap: Bitmap): Bitmap? {
+    private fun scaleBitmap(bitmap: Bitmap): Bitmap {
         return Bitmap.createScaledBitmap(bitmap, 192, 192, true)
     }
     private fun addImageValue(imgData: ByteBuffer, value: Int, k: Int) {
         if (k == 2) {
-            imgData.putFloat((value and 0xff0000 shr 16) / 255.toFloat())
+            imgData.putFloat((((value and 0xff0000 )shr 16)-ImageMean )/ 192.toFloat())
         } else if (k == 1) {
-            imgData.putFloat((value and 0xff00 shr 8) / 255.toFloat())
+            imgData.putFloat((((value and 0xff00) shr 8)-ImageMean) / 192.toFloat())
         } else {
-            imgData.putFloat((value and 0xff) / 255.toFloat())
+            imgData.putFloat((((value and 0xff) )-ImageMean)/ 192.toFloat())
         }
     }
     private fun convertBitmapToByteBuffer(bitmap: Bitmap): ByteBuffer? {
