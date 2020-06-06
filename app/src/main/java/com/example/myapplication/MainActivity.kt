@@ -10,7 +10,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import kotlinx.android.synthetic.main.activity_main.*
@@ -33,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var tflite:Interpreter
     val ImageMean=0
     lateinit var tv_show: TextView
+
     private val labelProbArray =
         Array(1) { FloatArray(13) }
 
@@ -74,18 +77,21 @@ class MainActivity : AppCompatActivity() {
                     val bitmap=BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))
                     myphoto=bitmap
                     predict_image()
-                    imageView.setImageBitmap(rotateIfRequired(scaleBitmap(bitmap)))
+                    imageView.layoutParams.width=550
+                    imageView.layoutParams.height=550
+                    imageView.setImageBitmap(rotateIfRequired(bitmap))
                 }
             }
             fromAlbum->{
                 if(resultCode==Activity.RESULT_OK && data!=null){
-                    data.data?.let{uri ->
-                        val bitmap=getBitmapFromUri(uri)
-                        if (bitmap != null) {
-                            myphoto=bitmap
-                        }
+                    data.data?.let { uri ->
+                        // 将选择的照片显示
+                        val bitmap = getBitmapFromUri(uri)
+                        myphoto= bitmap!!
                         predict_image()
-                        imageView.setImageBitmap(bitmap?.let { scaleBitmap(it) })
+                        imageView.layoutParams.width=550
+                        imageView.layoutParams.height=550
+                        imageView.setImageBitmap(bitmap)
                     }
                 }
             }
@@ -179,32 +185,46 @@ class MainActivity : AppCompatActivity() {
         changeLabel(getmax())
     }
     private fun changeLabel(label: Int) {
+        text.setTextSize(1, 45.0F)
         if (label == 0) {
-            text.text = "电池"
+            text.text = "有害垃圾"
+            Toast.makeText(this,"废电池属于有害垃圾,一颗普通电池弃入大自然后，可以污染60万升水，相当于一个人一生的用水量。",Toast.LENGTH_LONG).show()
         } else if (label == 1) {
-            text.text = "纸板"
+            text.text = "干垃圾"
+            Toast.makeText(this,"硬纸板是干垃圾，可用来旧物利用手工制作成漂亮家具用品。",Toast.LENGTH_LONG).show()
         } else if (label == 2) {
-            text.text = "筷子"
+            text.text = "干垃圾"
+            Toast.makeText(this,"筷子是干垃圾，可作为制作其他木质材料或填充材料。",Toast.LENGTH_LONG).show()
         } else if (label == 3) {
-            text.text = "叉子"
+            text.text = "干垃圾"
+            Toast.makeText(this,"塑料叉子是干垃圾",Toast.LENGTH_LONG).show()
         } else if (label == 4) {
-            text.text = "玻璃"
+            text.text = "可回收垃圾"
+            Toast.makeText(this,"玻璃是可回收垃圾",Toast.LENGTH_LONG).show()
         } else if (label == 5) {
             text.text = "口罩"
+            Toast.makeText(this,"Null",Toast.LENGTH_LONG).show()
         } else if (label == 6) {
             text.text = "金属"
+            Toast.makeText(this,"Null",Toast.LENGTH_LONG).show()
         } else if (label == 7) {
-            text.text = "废纸"
+            text.text = "可回收垃圾"
+            Toast.makeText(this,"废纸是可回收垃圾，根据纤维成分的不同，按纸种进行对应循环利用才能最大程度发挥废纸资源价值。",Toast.LENGTH_LONG).show()
         } else if (label == 8) {
-            text.text = "纸箱"
+            text.text = "可回收垃圾"
+            Toast.makeText(this,"纸箱一般为可回收垃圾，纸盒广泛用做食品、医药、电子等各种产品的销售包装。",Toast.LENGTH_LONG).show()
         } else if (label == 9) {
-            text.text = "果皮"
+            text.text = "湿垃圾"
+            Toast.makeText(this,"果皮是湿垃圾",Toast.LENGTH_LONG).show()
         } else if (label == 10) {
-            text.text = "塑料袋"
+            text.text = "干垃圾"
+            Toast.makeText(this,"塑料袋是干垃圾，其用以塑料为主要原料制成的袋子",Toast.LENGTH_LONG).show()
         } else if (label == 11) {
-            text.text = "塑料瓶"
+            text.text = "可回收垃圾"
+            Toast.makeText(this,"塑料瓶子是可回收垃圾",Toast.LENGTH_LONG).show()
         } else {
-            text.text = "汤勺"
+            text.text = "干垃圾"
+            Toast.makeText(this,"塑料勺子是干垃圾",Toast.LENGTH_LONG).show()
         }
     }
 
