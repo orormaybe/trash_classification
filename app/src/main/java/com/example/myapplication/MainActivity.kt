@@ -203,10 +203,10 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this,"玻璃是可回收垃圾",Toast.LENGTH_LONG).show()
         } else if (label == 5) {
             text.text = "口罩"
-            Toast.makeText(this,"Null",Toast.LENGTH_LONG).show()
+            Toast.makeText(this,"其他垃圾",Toast.LENGTH_LONG).show()
         } else if (label == 6) {
             text.text = "金属"
-            Toast.makeText(this,"Null",Toast.LENGTH_LONG).show()
+            Toast.makeText(this,"可回收垃圾",Toast.LENGTH_LONG).show()
         } else if (label == 7) {
             text.text = "可回收垃圾"
             Toast.makeText(this,"废纸是可回收垃圾，根据纤维成分的不同，按纸种进行对应循环利用才能最大程度发挥废纸资源价值。",Toast.LENGTH_LONG).show()
